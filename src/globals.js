@@ -1,1 +1,1 @@
-export const status = 'authenticated'; // 'not-authenticated', 'checking', 'authenticated'
+export const status = 'not-authenticated'; // 'not-authenticated', 'checking', 'authenticated'
