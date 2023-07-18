@@ -9,12 +9,14 @@ import {
   Navbar,
 } from '../components';
 import { localizer, getMessagesES } from '../../helpers/';
-import { useState } from 'react';
-import { useCalendarStore, useUiStore } from '../../hooks';
+import { useEffect, useState } from 'react';
+import { useAuthStore, useCalendarStore, useUiStore } from '../../hooks';
+import { useSelector } from 'react-redux';
 
 export const CalendarPage = () => {
   // Imports de Custom Hooks
-  const { events, setActiveEvent } = useCalendarStore();
+  const { user } = useAuthStore();
+  const { events, setActiveEvent, startLoadingEvents } = useCalendarStore();
   const { openDateModal } = useUiStore();
 
   // Estado propio del componente
@@ -22,8 +24,11 @@ export const CalendarPage = () => {
     localStorage.getItem('lastView') || 'week'
   );
   const eventStyleGetter = (event, start, end, isSelected) => {
+    const isMyEvent =
+      user.uid === event.user._id || user.uid === event.user.uid;
+
     const style = {
-      backgroundColor: '#347CF7',
+      backgroundColor: isMyEvent ? '#347CF7' : '#465660',
       borderRadius: '0px',
       opacity: 0.8,
       color: 'white',
@@ -44,6 +49,11 @@ export const CalendarPage = () => {
     localStorage.setItem('lastView', event);
     setLastView(event);
   };
+
+  // Carga de eventos
+  useEffect(() => {
+    startLoadingEvents();
+  }, []);
 
   return (
     <>
